@@ -1,8 +1,8 @@
 
 # About the project
 
-I'm expect to learn how to do Rstudio with **huge data**. In addition, I want to know about how to *visualize* the data properly.
+I'm expect to learn how to do Rstudio with **huge data**. In addition, I want to know about how to *visualize* the data properly. 
 
-Link: https://github.com/swinesci/IODS-project
+Link: *https://github.com/swinesci/IODS-project*
 
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you can use R Markdown syntax.*
