@@ -3,6 +3,7 @@
 *Describe the work you have done this week and summarize your learning.*
 
 **Installed Rstudio and Git in my labtop. Practice the Rstudio and connect Rstudio with Github.**
+*So far, I got a basic knowledge about R and Git.*
 
 - Describe your work and results clearly. 
 - Assume the reader has an introductory course level understanding of writing and reading R code as well as statistical methods.
