@@ -5,4 +5,6 @@ I'm expect to learn how to do Rstudio with **huge data**. In addition, I want to
 
 Link: *https://github.com/swinesci/IODS-project*
 
+I have a problem with chapter 2
+
 *Write a short description about the course and add a link to your GitHub repository here. This is an R Markdown (.Rmd) file so you can use R Markdown syntax.*
