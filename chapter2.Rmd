@@ -3,4 +3,5 @@
 
 **Installed Rstudio and Git in my labtop. Practice the Rstudio and connect Rstudio with Github.**
 *So far, I got a basic knowledge about R and Git.*
+I have some problem with Z drive..
 
