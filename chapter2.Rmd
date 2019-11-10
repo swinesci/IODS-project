@@ -1,7 +1,72 @@
-# Looking at data
 
+# Excercise 2
 
-**Installed Rstudio and Git in my labtop. Practice the Rstudio and connect Rstudio with Github.**
-*So far, I got a basic knowledge about R and Git.*
-I have some problem with Z drive..
+# to see the data
+```{r}
+df <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/learning2014.txt", sep=",", header=TRUE)
+```
+# to see structure and dimmension
+```{r}
+str(df)
+dim(df)
+```
+# to acess the ggplot 2 library
+```{r}
+library(ggplot2)
+ggplot(df)
+pairs(df[-1])
+```
+# to access the GGally and ggplot2
+```{r}
+library(GGally)
+library(ggplot2)
+```
+# to see summary
+```{r}
+summary(df)
+```
+# create a more advanced plot matrix with ggpairs
+```{r}
+p <- ggpairs(df, maaping = aes(col = gender, alpha = 0.3), lower = list(combo = wrap("facethist", bins = 20)))
+```
+# to draw the plot
+```{r}
+p
+```
+#*The three explanatory variables are "attitude", "strategy" and "surface".* **These are choosen based on r value**
 
+# to see scatter plot
+```{r}
+qplot(attitude, points, data = df) + geom_smooth(method = "lm")
+```
+# fit a linear model
+```{r}
+model <- lm(points ~1, data = df)
+```
+# summary of the model
+```{r}
+summary(model)
+```
+# to create an plot matrix
+```{r}
+library(GGally)
+ggpairs(df, lower = list(combo = wrap("facethist", bins = 20)))
+```
+# to create a regression model with multibple explanatory variables
+```{r}
+model2<- lm(points ~ attitude + stra + surf, data = df)
+summary(model2)
+```
+**remove the surf because its p value was the highest**
+```{r}
+model3<- lm(points ~attitude + stra, data=df)
+summary(model3)
+```
+**the most significant variable was attitude. Stra had only tendency**
+# to draw diagnostic plots
+```{r}
+par(mfrow = c(2,2))
+plot(model3, which = c(1,2,5))
+```
+**QQ plot showed this model is normally distributed**
+**all looks good**
