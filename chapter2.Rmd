@@ -52,6 +52,7 @@ summary(model)
 library(GGally)
 ggpairs(df, lower = list(combo = wrap("facethist", bins = 20)))
 ```
+
 # to create a regression model with multibple explanatory variables
 ```{r}
 model2<- lm(points ~ attitude + stra + surf, data = df)
@@ -63,6 +64,7 @@ model3<- lm(points ~attitude + stra, data=df)
 summary(model3)
 ```
 **the most significant variable was attitude. Stra had only tendency**
+
 # to draw diagnostic plots
 ```{r}
 par(mfrow = c(2,2))
