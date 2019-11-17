@@ -1,39 +1,20 @@
----
-title: "Chapter3"
-output: html_document
----
+# Excersize 3
 
-alc <- read.csv("Z:\\IODS-project\\data\\alc.csv", sep = ",", header = TRUE)
-
-summary(alc)
-
-library(tidyr)
-library(dplyr)
-library(ggplot2)
-
-# glimpse at the alc data
 ```{r}
-glimpse(alc) 
-```
-
-# use gather() to gather columns into key-value pairs and then glimpse() at the resulting data
-```{r}
-gather(alc) %>% glimpse
-```
-
-# draw a bar plot of each variable
-```{r}
-gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+alc <- read.csv("Z:\\IODS-project\\data\\alc.csv", sep = ",")
 ```
 
 # access the tidyverse libraries dplyr and ggplot2
 ```{r}
-library(dplyr); library(ggplot2)
+library(dplyr)
 ```
 
+```{r}
+library(ggplot2)
+```
 # produce summary statistics by group
 ```{r}
-alc %>% group_by(sex, high_use) %>% summarise(count = n(), mean_grade = mean(G3))
+alc %>% group_by(sex) %>% summarise(count = n())
 ```
 
 library(ggplot2)
@@ -74,7 +55,6 @@ summary(m)
 ```{r}
 coef(m)
 ```
-
 # alc and dlyr are available 
 
 # find the model with glm()
@@ -86,7 +66,6 @@ m <- glm(high_use ~ failures + absences + sex, data = alc, family = "binomial")
 ```{r}
 OR <- coef(m) %>% exp
 ```
-
 # compute confidence intervals (CI)
 ```{r}
 CI <- confint(m) %>% exp
@@ -187,3 +166,4 @@ cv <- cv.glm(data = alc, cost = loss_func, glmfit = m, K = 10)
 ```{r}
 cv$delta[1]
 ```
+
