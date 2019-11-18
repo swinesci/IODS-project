@@ -4,6 +4,25 @@
 alc <- read.csv("Z:\\IODS-project\\data\\alc.csv", sep = ",")
 ```
 
+# access the tidyverse libraries tidyr, dplyr, ggplot2
+```{r}
+library(tidyr); library(dplyr); library(ggplot2)
+```
+
+# glimpse at the alc data
+```{r}
+glimpse(alc) 
+```
+# use gather() to gather columns into key-value pairs and then glimpse() at the resulting data
+```{r}
+gather(alc) %>% glimpse
+```
+
+# draw a bar plot of each variable
+```{r}
+gather(alc) %>% ggplot(aes(value)) + facet_wrap("key", scales = "free") + geom_bar()
+```
+
 # access the tidyverse libraries dplyr and ggplot2
 ```{r}
 library(dplyr)
