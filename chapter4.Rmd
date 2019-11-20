@@ -1,0 +1,241 @@
+# Excercise 4
+
+## access the MASS package
+```{r}
+library(MASS)
+```
+
+## load the data
+```{r}
+data("Boston")
+```
+
+## explore the dataset
+```{r}
+str(Boston)
+summary(Boston)
+```
+
+
+
+```{r}
+library(tidyr)
+library(corrplot)
+library(dplyr)
+```
+
+## calculate the correlation matrix and round it
+```{r}
+cor_matrix<-cor(Boston) %>% round(digits = 2 )
+```
+
+## print the correlation matrix
+```{r}
+cor_matrix
+```
+
+## visualize the correlation matrix
+```{r}
+corrplot(cor_matrix, method="circle", type="upper", cl.pos="b", tl.pos="d", tl.cex = 0.6)
+```
+
+**It seems that "dis" is closely related to "age", "nox", "indus" and "zn".**
+
+## center and standardize variables
+```{r}
+boston_scaled <- scale(Boston)
+```
+
+## summaries of the scaled variables
+```{r}
+summary(boston_scaled)
+```
+
+## class of the boston_scaled object
+```{r}
+class(boston_scaled)
+```
+
+## change the object to data frame
+```{r}
+boston_scaled <- as.data.frame(boston_scaled)
+```
+
+## summary of the scaled crime rate
+```{r}
+summary(boston_scaled$crim)
+```
+
+## create a quantile vector of crim and print it
+```{r}
+bins <- quantile(boston_scaled$crim)
+```
+
+```{r}
+bins
+```
+
+## create a categorical variable 'crime'
+```{r}
+crime <- cut(boston_scaled$crim, breaks = bins, include.lowest = TRUE, labels = c("low", "med_low", "med_high", "high"))
+```
+
+## look at the table of the new factor crime
+```{r}
+table(crime)
+```
+
+## remove original crim from the dataset
+```{r}
+boston_scaled <- dplyr::select(boston_scaled, -crim)
+```
+
+## add the new categorical value to scaled data
+```{r}
+boston_scaled <- data.frame(boston_scaled, crime)
+```
+
+## number of rows in the Boston dataset 
+```{r}
+n <- nrow(boston_scaled)
+```
+
+## choose randomly 80% of the rows
+```{r}
+ind <- sample(n,  size = n * 0.8)
+```
+
+## create train set
+```{r}
+train <- boston_scaled[ind,]
+```
+
+## create test set 
+```{r}
+test <- boston_scaled[-ind,]
+```
+
+## save the correct classes from test data
+```{r}
+correct_classes <- test$crime
+```
+
+## remove the crime variable from test data
+```{r}
+test <- dplyr::select(test, -crime)
+```
+
+## linear discriminant analysis
+```{r}
+lda.fit <- lda(crime ~ ., data = train)
+```
+
+## print the lda.fit object
+```{r}
+lda.fit
+```
+
+## the function for lda biplot arrows
+```{r}
+lda.arrows <- function(x, myscale = 1, arrow_heads = 0.1, color = "orange", tex = 0.75, choices = c(1,2)){
+  heads <- coef(x)
+  arrows(x0 = 0, y0 = 0, 
+         x1 = myscale * heads[,choices[1]], 
+         y1 = myscale * heads[,choices[2]], col=color, length = arrow_heads)
+  text(myscale * heads[,choices], labels = row.names(heads), 
+       cex = tex, col=color, pos=3)
+}
+```
+
+## target classes as numeric
+```{r}
+classes <- as.numeric(train$crime)
+```
+
+## plot the lda results
+```{r}
+plot(lda.fit, dimen = 2, col = classes, pch = classes)
+lda.arrows(lda.fit, myscale = 1)
+```
+
+## predict classes with test data
+```{r}
+lda.pred <- predict(lda.fit, newdata = test)
+```
+
+## cross tabulate the results
+```{r}
+table(correct = correct_classes, predicted = lda.pred$class)
+```
+
+
+## load MASS and Boston
+```{r}
+library(MASS)
+data('Boston')
+```
+
+## euclidean distance matrix
+```{r}
+dist_eu <- dist(Boston)
+```
+
+## look at the summary of the distances
+```{r}
+summary(dist_eu)
+```
+
+## manhattan distance matrix
+```{r}
+dist_man <- dist(Boston, method = 'manhattan')
+```
+
+## look at the summary of the distances
+```{r}
+summary(dist_man)
+```
+
+## k-means clustering
+```{r}
+km <-kmeans(Boston, centers = 3)
+```
+
+## plot the Boston dataset with clusters
+```{r}
+pairs(Boston, col = km$cluster)
+```
+## Boston dataset is available
+```{r}
+set.seed(123)
+```
+
+## determine the number of clusters
+```{r}
+k_max <- 10
+```
+
+## calculate the total within sum of squares
+```{r}
+twcss <- sapply(1:k_max, function(k){kmeans(Boston, k)$tot.withinss})
+```
+
+## visualize the results
+```{r}
+library(ggplot2)
+```
+
+```{r}
+qplot(x = 1:k_max, y = twcss, geom = 'line')
+```
+
+## k-means clustering
+```{r}
+km <-kmeans(Boston, centers = 2)
+```
+
+## plot the Boston dataset with clusters
+```{r}
+pairs(Boston, col = km$cluster)
+```
+
+
