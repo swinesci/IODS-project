@@ -97,7 +97,7 @@ boston_scaled <- data.frame(boston_scaled, crime)
 
 ## number of rows in the Boston dataset 
 ```{r}
-n <- nrow(boston_scaled)
+n <- nrow(Boston)
 ```
 
 ## choose randomly 80% of the rows
@@ -175,9 +175,20 @@ library(MASS)
 data('Boston')
 ```
 
-## euclidean distance matrix
+
+## center and standardize variables
 ```{r}
-dist_eu <- dist(Boston)
+boston_scaled <- scale(Boston)
+```
+
+## change the object to data frame from matrix type.
+```{r}
+boston_scaled <- as.data.frame(boston_scaled)
+```
+
+## Calculate the Euclidean distances between observations.
+```{r}
+dist_eu <- dist(boston_scaled)
 ```
 
 ## look at the summary of the distances
@@ -185,25 +196,17 @@ dist_eu <- dist(Boston)
 summary(dist_eu)
 ```
 
-## manhattan distance matrix
+# K-means clustering
 ```{r}
-dist_man <- dist(Boston, method = 'manhattan')
+km <-kmeans(boston_scaled, centers = 3)
 ```
 
-## look at the summary of the distances
+# plot the Boston dataset with clusters
 ```{r}
-summary(dist_man)
+pairs(boston_scaled, col = km$cluster)
 ```
 
-## k-means clustering
-```{r}
-km <-kmeans(Boston, centers = 3)
-```
 
-## plot the Boston dataset with clusters
-```{r}
-pairs(Boston, col = km$cluster)
-```
 ## Boston dataset is available
 ```{r}
 set.seed(123)
@@ -216,7 +219,7 @@ k_max <- 10
 
 ## calculate the total within sum of squares
 ```{r}
-twcss <- sapply(1:k_max, function(k){kmeans(Boston, k)$tot.withinss})
+twcss <- sapply(1:k_max, function(k){kmeans(boston_scaled, k)$tot.withinss})
 ```
 
 ## visualize the results
@@ -230,12 +233,12 @@ qplot(x = 1:k_max, y = twcss, geom = 'line')
 
 ## k-means clustering
 ```{r}
-km <-kmeans(Boston, centers = 2)
+km <-kmeans(boston_scaled, centers = 2)
 ```
 
 ## plot the Boston dataset with clusters
 ```{r}
-pairs(Boston, col = km$cluster)
+pairs(boston_scaled, col = km$cluster)
 ```
 
 ## ggpairs
@@ -268,5 +271,15 @@ library(plotly)
 ### 3D figure
 ```{r}
 plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = train$crime )
+```
+
+### First one needs to do k-means with 4 clusters to compare the methods.
+```{r}
+km3D <-kmeans(boston_scaled, centers = 4)
+```
+
+### 3D figure
+```{r}
+plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = km3D$cluster[ind])
 ```
 
