@@ -238,4 +238,35 @@ km <-kmeans(Boston, centers = 2)
 pairs(Boston, col = km$cluster)
 ```
 
+## ggpairs
+```{r}
+library(GGally)
+ggpairs(boston_scaled)
+```
+
+## Super bonus
+```{r}
+model_predictors <- dplyr::select(train, -crime)
+```
+
+### check the dimensions
+```{r}
+dim(model_predictors)
+dim(lda.fit$scaling)
+```
+
+### matrix multiplication
+```{r}
+matrix_product <- as.matrix(model_predictors) %*% lda.fit$scaling
+matrix_product <- as.data.frame(matrix_product)
+```
+
+```{r}
+library(plotly)
+```
+
+### 3D figure
+```{r}
+plot_ly(x = matrix_product$LD1, y = matrix_product$LD2, z = matrix_product$LD3, type= 'scatter3d', mode='markers', color = train$crime )
+```
 
