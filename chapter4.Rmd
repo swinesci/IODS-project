@@ -196,12 +196,12 @@ dist_eu <- dist(boston_scaled)
 summary(dist_eu)
 ```
 
-# K-means clustering
+## K-means clustering
 ```{r}
 km <-kmeans(boston_scaled, centers = 3)
 ```
 
-# plot the Boston dataset with clusters
+## plot the Boston dataset with clusters
 ```{r}
 pairs(boston_scaled, col = km$cluster)
 ```
