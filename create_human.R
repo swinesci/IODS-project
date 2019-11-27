@@ -1,66 +1,64 @@
 
 
+# read the human data
+human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human1.txt", sep  =",", header = T)
 
-## Read human data
-hd <- read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human_development.csv", stringsAsFactors = F)
+# look at the (column) names of human
+names(human)
 
-## look at the data
-str(hd)
-dim(hd)
+# look at the structure of human
+str(human)
 
-summary(hd)
+# print out summaries of the variables
+summary(human)
 
-colnames(hd)
+# access the stringr package
+library(stringr)
+
+# look at the structure of the GNI column in 'human'
+str(human$GNI)
+
+# remove the commas from GNI and print out a numeric version of it
+str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric
+
+# columns to keep
+keep <- c("Country", "Edu2.FM", "Labo.FM", "Life.Exp", "Edu.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F")
+
+# select the 'keep' columns
+human <- select(human, one_of(keep))
+
+# print out a completeness indicator of the 'human' data
+complete.cases(human)
+
+# print out the data along with a completeness indicator as the last column
+data.frame(human[-1], comp = complete.cases(human1))
+
+# filter out all rows with NA values
+human_ <- filter(human, complete.cases(human))
 
 
-#to change col name
-colnames(hd)[1] <- "hdiRank"
-colnames(hd)[2] <- "country"
-colnames(hd)[3] <- "HDI"
-colnames(hd)[4] <- "lifeExaBirth"
-colnames(hd)[5] <- "expectedYofEdu"
-colnames(hd)[6] <- "meanYofEdu"
-colnames(hd)[7] <- "GNIperCap"
-colnames(hd)[8] <- "GNIperCapRank"
+# look at the last 10 observations
+tail(human, 10)
 
-colnames(hd)
+# last indice we want to keep
+last <- nrow(human) - 7
 
-library(dplyr)
-## Read gender data
-gii <- read.csv("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/gender_inequality.csv", stringsAsFactors = F, na.strings = "..")
+# choose everything until the last 7 observations
+human_ <- human[1:last, ]
 
-## look at the data
-str(gii)
-dim(gii)
+# add countries as rownames
+rownames(human) <- human$Country
 
-summary(gii)
+# remove the Country variable
+human_ <- select(human, -Country)
 
-colnames(gii)
-colnames(gii)[1] <- "GIIRank"
-colnames(gii)[2] <- "country"
-colnames(gii)[3] <- "GII"
-colnames(gii)[4] <- "mortality"
-colnames(gii)[5] <- "birthrate"
-colnames(gii)[6] <- "par"
-colnames(gii)[7] <- "edu2F"
-colnames(gii)[8] <- "edu2M"
-colnames(gii)[9] <- "labF"
-colnames(gii)[10] <- "labM"
 
-colnames(gii)
+# Access GGally
+library(GGally)
 
-# Mutate variable
-gii <- mutate(gii, edu2Fedu2M = edu2F / edu2M)
-gii <- mutate(gii, labFlabM = labF / labM)
+# visualize the 'human_' variables
+ggpairs(human_)
 
-colnames(gii)
+# compute the correlation matrix and visualize it with corrplot
+cor(human_) %>% corrplot
 
-join_by <- c("country")
-human <- inner_join(hd, gii, by = join_by, suffix = c(".hd",".gii"))
-
-human
-
-glimpse(human)
-
-write.table(human)
-write.csv(human, 'Z:\\IODS-project\\data\\human.csv')
