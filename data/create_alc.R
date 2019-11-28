@@ -1,113 +1,56 @@
 Taehee Han 13.11.2019 Excersize 3
 
-#read the csv
-math <- read.csv("Z:\\IODS-project\\data\\student-mat.csv", sep = ";")
-por <- read.csv("Z:\\IODS-project\\data\\student-por.csv", sep =";")
+human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human1.txt", sep  =",", header = T)
 
-math
-por
+#This is continuum for last week's data wrangling. We are continuing with the same data.
+#1. mutate data GNI to numeric
 
-#read the struscture and dimmensions
-str(math)
-dim(math)
+human <- mutate(human, GNI = as.numeric(human$GNI))
+str(human)
 
-str(por)
-dim(por)
+library(stringr)
+# remove the commas from GNI and print out a numeric version of it
+str_replace(human$GNI, pattern=",", replace ="") %>% as.numeric
 
-#access the dplyr library
-library(dplyr)
+#2. Keep columns: (described in the meta file above):  "Country", "Edu2.FM", "Labo.FM", "Edu.Exp", "Life.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F"
 
-#common columns to use as identifiers
-join_by <- c("school","sex","age","address","famsize","Pstatus","Medu","Fedu","Mjob","Fjob","reason","nursery","internet")
+keep <- c("Country", "Edu2.FM", "Labo.FM", "Life.Exp", "Edu.Exp", "GNI", "Mat.Mor", "Ado.Birth", "Parli.F")
 
-#join the two datasets by the selected identifiers
-math_por <- inner_join(math, por, by = join_by, suffix = c(".math",".por"))
+# select the 'keep' columns
+human <- select(human, one_of(keep))
 
-colnames(math_por)
+#3.Remove rows with missing values
+#create column with missing values and then filter leaving NA's out.
+complete.cases(human)
 
-glimpse(math_por)
+data.frame(human[-1], comp = complete.cases(human))
+str(human)
 
-# dplyr, math_por, join_by are available
 
-# print out the column names of 'math_por'
-colnames(math_por)
+# look at the last 10 observations
+tail(human, 10)
 
-# create a new data frame with only the joined columns
-alc <- select(math_por, one_of(join_by))
+# last indice we want to keep
+last <- nrow(human) - 7
 
-# columns that were not used for joining the data
-notjoined_columns <- colnames(math)[!colnames(math) %in% join_by]
+# choose everything until the last 7 observations
+human_ <- human[1:155, ]
 
-# print out the columns not used for joining
-notjoined_columns
+# add countries as rownames
+rownames(human) <- human$Country
 
-# for every column name not used for joining...
-for(column_name in notjoined_columns) {
-  # select two columns from 'math_por' with the same original name
-  two_columns <- select(math_por, starts_with(column_name))
-  # select the first column vector of those two columns
-  first_column <- select(two_columns, 1)[[1]]
-  
-  # if that first column  vector is numeric...
-  if(is.numeric(first_column)) {
-    # take a rounded average of each row of the two columns and
-    # add the resulting vector to the alc data frame
-    alc[column_name] <- round(rowMeans(two_columns))
-  } else { # else if it's not numeric...
-    # add the first column vector to the alc data frame
-    alc[column_name] <- first_column
-  }
-}
+# modified human, dplyr and the corrplot functions are available
 
-# glimpse at the new combined data
-glimpse(alc)
+# remove the Country variable
+human <- dplyr::select(human, -Country)
 
-# alc is available
 
-# access the 'tidyverse' packages dplyr and ggplot2
-library(dplyr); library(ggplot2)
+#Now we have wanted 155 observations and 8 variables, with countries as rownames.
+#override the old data:
 
-# define a new column alc_use by combining weekday and weekend alcohol use
-alc <- mutate(alc, alc_use = (Dalc + Walc) / 2)
-
-# initialize a plot of alcohol use
-g1 <- ggplot(data = alc, aes(x = alc_use, fill = sex))
-
-# define the plot as a bar plot and draw it
-g1 + geom_bar()
-
-# define a new logical column 'high_use'
-alc <- mutate(alc, high_use = alc_use > 2)
-
-# initialize a plot of 'high_use'
-g2 <- ggplot(alc, aes(high_use))
-
-# draw a bar plot of high_use by sex
-g2 + facet_wrap("sex") + geom_bar()
-# print out the columns not used for joining
-notjoined_columns
-
-# for every column name not used for joining...
-for(column_name in notjoined_columns) {
-  # select two columns from 'math_por' with the same original name
-  two_columns <- select(math_por, starts_with(column_name))
-  # select the first column vector of those two columns
-  first_column <- select(two_columns, 1)[[1]]
-  
-  # if that first column  vector is numeric...
-  if(is.numeric(first_column)) {
-    # take a rounded average of each row of the two columns and
-    # add the resulting vector to the alc data frame
-    alc[column_name] <- round(rowMeans(two_columns))
-  } else { # else if it's not numeric...
-    # add the first column vector to the alc data frame
-    alc[column_name] <- first_column
-  }
-}
-
-# glimpse at the new combined data
-glimpse(alc)
-
-write.table(alc)
-write.csv(alc, 'Z:\\IODS-project\\data\\alc.csv')
-
+write.csv(human, file = "human.csv", row.names = FALSE)
+human <- read.csv("human.csv", sep=",", header= T)
+str(human)
+summary(human)
+complete.cases(human)
+head(human)

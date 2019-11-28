@@ -1,5 +1,3 @@
-
-
 # read the human data
 human <- read.table("http://s3.amazonaws.com/assets.datacamp.com/production/course_2218/datasets/human1.txt", sep  =",", header = T)
 
@@ -11,6 +9,8 @@ str(human)
 
 # print out summaries of the variables
 summary(human)
+
+# tidyr package and human are available
 
 # access the stringr package
 library(stringr)
@@ -31,26 +31,25 @@ human <- select(human, one_of(keep))
 complete.cases(human)
 
 # print out the data along with a completeness indicator as the last column
-data.frame(human[-1], comp = complete.cases(human1))
+data.frame(human[-1], comp = complete.cases(human))
 
 # filter out all rows with NA values
 human_ <- filter(human, complete.cases(human))
-
 
 # look at the last 10 observations
 tail(human, 10)
 
 # last indice we want to keep
-last <- nrow(human) - 7
+last <- nrow(human_) - 7
 
 # choose everything until the last 7 observations
-human_ <- human[1:last, ]
+human_ <- human_[1:last, ]
 
-# add countries as rownames
-rownames(human) <- human$Country
+
+
 
 # remove the Country variable
-human_ <- select(human, -Country)
+human_ <- select(human_, -Country)
 
 
 # Access GGally
@@ -62,3 +61,6 @@ ggpairs(human_)
 # compute the correlation matrix and visualize it with corrplot
 cor(human_) %>% corrplot
 
+glimpse(human_)
+write.table(human_)
+write.csv(human, 'Z:\\IODS-project\\data\\human.csv')
