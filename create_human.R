@@ -15,6 +15,9 @@ summary(human)
 # access the stringr package
 library(stringr)
 
+# mutate the GNI into numeric
+human <- mutate(human, GNI = as.numeric(human$GNI))
+
 # look at the structure of the GNI column in 'human'
 str(human$GNI)
 
@@ -43,7 +46,7 @@ tail(human, 10)
 last <- nrow(human_) - 7
 
 # choose everything until the last 7 observations
-human_ <- human_[1:last, ]
+human_ <- human_[1:155, ]
 
 
 

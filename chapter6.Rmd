@@ -1,0 +1,37 @@
+# Read BPRSL data
+```{r}
+BPRL <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", sep=" ", header=TRUE)
+str(BPRL)
+```
+
+```{r}
+summary(BPRL)
+```
+
+# Read BPRSL data
+```{r}
+RATS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", sep="\t", header=TRUE)
+str(RATS)
+```
+
+**These data are treatment and groups**
+
+# Convert the categorical variables of both sets to factors
+```{r}
+BPRL$treatment <- factor(BPRL$treatment)
+BPRL$subject <- factor(BPRL$subject)
+```
+```{r}
+str(BPRL)
+```
+
+
+```{r}
+RATS$Group <- factor(RATS$Group)
+RATS$ID <- factor(RATS$ID)
+```
+```{r}
+str(RATS)
+```
+
+
