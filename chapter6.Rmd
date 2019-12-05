@@ -1,31 +1,47 @@
 # Read BPRSL data
 ```{r}
-BPRL <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", sep=" ", header=TRUE)
-str(BPRL)
+BPRS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/BPRS.txt", sep=" ", header=TRUE)
+str(BPRS)
 ```
 
 ```{r}
-summary(BPRL)
+summary(BPRS)
 ```
 
-# Read BPRSL data
+
+
+**These data are treatment and groups**
+
+
+```{r}
+library(dplyr)
+library(tidyr)
+```
+
+# Convert the categorical variables of both sets to factors
+```{r}
+BPRS$treatment <- factor(BPRS$treatment)
+BPRS$subject <- factor(BPRS$subject)
+```
+```{r}
+str(BPRS)
+```
+
+# Convert to long form
+```{r}
+BPRS <-  BPRS %>% gather(key = weeks, value = bprs, -treatment, -subject)
+```
+# See the BPRS
+```{r}
+glimpse(BPRS)
+```
+
+
+# Read RATS data
 ```{r}
 RATS <- read.table("https://raw.githubusercontent.com/KimmoVehkalahti/MABS/master/Examples/data/rats.txt", sep="\t", header=TRUE)
 str(RATS)
 ```
-
-**These data are treatment and groups**
-
-# Convert the categorical variables of both sets to factors
-```{r}
-BPRL$treatment <- factor(BPRL$treatment)
-BPRL$subject <- factor(BPRL$subject)
-```
-```{r}
-str(BPRL)
-```
-
-
 ```{r}
 RATS$Group <- factor(RATS$Group)
 RATS$ID <- factor(RATS$ID)
@@ -34,4 +50,11 @@ RATS$ID <- factor(RATS$ID)
 str(RATS)
 ```
 
-
+# Convert to long form
+```{r}
+RATS <-  RATS %>% gather(key = WDs, value = rats, -ID, -Group)
+```
+# See the RATS
+```{r}
+glimpse(RATS)
+```
