@@ -130,6 +130,9 @@ glimpse(BPRSS)
 
 Mean response profiles for the two treatment groups in the BPRS data.
 
+
+
+
 ## Plot the mean profiles
 ```{r}
 ggplot(BPRSS, aes(x = weeks, y = mean, linetype = treatment, shape = treatment)) +
@@ -142,3 +145,50 @@ ggplot(BPRSS, aes(x = weeks, y = mean, linetype = treatment, shape = treatment))
   scale_y_continuous(name = "mean(bprs) +/- se(bprs)")
 ```
 
+```{r}
+RATSL<-gather(RATS, key=WDs, value=weight, WD1:WD64)%>%mutate(time= as.integer(substr(WDs,3,4)))
+```
+
+```{r}
+ggplot(RATSL, aes(x = time, y = weight, linetype = ID)) +
+  geom_line() +
+  scale_linetype_manual(values = rep(1:10, times=4)) +
+  facet_grid(. ~ Group, labeller = label_both) +
+  theme(legend.position = "none") + 
+  scale_y_continuous(limits = c(min(RATSL$weight), max(RATSL$weight)))
+```
+Standardise the weight
+```{r}
+RATSL<- RATSL%>%group_by(time)%>%mutate(stdweight = (weight - mean(weight))/sd(weight))%>%ungroup()
+glimpse(RATSL)
+```
+```{r}
+p1<-ggplot(RATSL, aes(x=time, y=stdweight, linetype=ID))
+p2<-p1+geom_line()+scale_linetype_manual(values=rep(1:10, times=4))
+p3<-p2+facet_grid(. ~Group, labeller = label_both)
+p4<-p3+theme_bw()+theme(legend.position ="none")
+p5<-p4+theme(panel.grid.minor.y=element_blank())
+p6<-p5+scale_y_continuous(name="standardized weights")
+p6
+```
+
+Numberof times, baseline (time 0)
+```{r}
+n<-RATSL$time%>%unique()%>%length()
+```
+Make a summary data
+```{r}
+RATSS<-RATSL%>%group_by(Group, time)%>% summarise(mean=mean(weight), se=sd(weight)/sqrt(n))%>%ungroup()
+glimpse(RATSS)
+```
+Visualize the  mean weight and SE
+```{r}
+p1<-ggplot(RATSS, aes(x=time, y=mean, linetype=Group, shape=Group))
+p2<-p1+geom_line()+scale_linetype_manual(values=c(1,2,3))
+p3<-p2+geom_point(size=3)+scale_shape_manual(values=c(1,2,3))
+p4<-p3+geom_errorbar(aes(ymin=mean-se, ymax=mean+se, linetype="1"), width=0.3)
+p5<-p4+theme_bw()+theme(panel.grid.major=element_blank(), panel.grid.minor=element_blank())
+p6<-p5+theme(legend.position= "top")
+p7<-p6+scale_y_continuous(name="mean(weights) +/- se(weights)")
+p7
+```
