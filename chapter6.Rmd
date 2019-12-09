@@ -1,5 +1,5 @@
 
-# Excercise 5
+# Excercise 6
 
 ## Read BPRSL data
 ```{r}
